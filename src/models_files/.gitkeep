@@ -1,0 +1,3 @@
+# This file ensures the models_files directory is tracked by git
+# The actual ONNX model files will be placed here
+# Use Git LFS for large model files (>100MB)
