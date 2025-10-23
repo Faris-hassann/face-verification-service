@@ -1,6 +1,6 @@
 const faceService = require('../services/face.service');
 const imageService = require('../services/image.service');
-const UserEmbedding = require('../models/userEmbedding.model');
+const getUserEmbeddingModel = require('../models/userEmbedding.model');
 const ResponseHelper = require('../utils/response');
 const logger = require('../utils/logger');
 const { catchAsync, ValidationError } = require('../utils/errorHandler');
@@ -47,6 +47,9 @@ const encodeFace = catchAsync(async (req, res) => {
       modelInfo: faceService.getModelInfo()
     };
 
+    // Get the model instance
+    const UserEmbedding = getUserEmbeddingModel();
+    
     // Check if user already exists
     const existingUser = await UserEmbedding.findByUserId(userId);
     
@@ -101,6 +104,7 @@ const getUserEmbedding = catchAsync(async (req, res) => {
       return ResponseHelper.badRequest(res, 'User ID is required');
     }
 
+    const UserEmbedding = getUserEmbeddingModel();
     const userEmbedding = await UserEmbedding.findByUserId(userId);
     
     if (!userEmbedding) {
@@ -132,6 +136,7 @@ const deleteUserEmbedding = catchAsync(async (req, res) => {
       return ResponseHelper.badRequest(res, 'User ID is required');
     }
 
+    const UserEmbedding = getUserEmbeddingModel();
     const deleted = await UserEmbedding.deactivateEmbedding(userId);
     
     if (!deleted) {
@@ -153,6 +158,7 @@ const deleteUserEmbedding = catchAsync(async (req, res) => {
  */
 const listUserEmbeddings = catchAsync(async (req, res) => {
   try {
+    const UserEmbedding = getUserEmbeddingModel();
     const embeddings = await UserEmbedding.getAllActiveEmbeddings();
     
     const responseData = embeddings.map(embedding => ({

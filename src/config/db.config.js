@@ -25,7 +25,7 @@ class DatabaseConfig {
         },
         define: {
           timestamps: true,
-          underscored: true
+          underscored: false
         }
       });
 

@@ -1,6 +1,6 @@
 const faceService = require('../services/face.service');
 const similarityService = require('../services/similarity.service');
-const UserEmbedding = require('../models/userEmbedding.model');
+const getUserEmbeddingModel = require('../models/userEmbedding.model');
 const ResponseHelper = require('../utils/response');
 const logger = require('../utils/logger');
 const { catchAsync, ValidationError } = require('../utils/errorHandler');
@@ -122,6 +122,7 @@ const compareFaceByUserId = catchAsync(async (req, res) => {
     });
 
     // Get stored embedding for user
+    const UserEmbedding = getUserEmbeddingModel();
     const userEmbedding = await UserEmbedding.findByUserId(userId);
     
     if (!userEmbedding) {

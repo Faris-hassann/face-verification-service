@@ -6,7 +6,7 @@ const config = require('./config/env.config');
 
 class Server {
   constructor() {
-    this.app = new App();
+    this.app = null;
     this.server = null;
   }
 
@@ -14,7 +14,7 @@ class Server {
     try {
       logger.info('Starting Face Verification Service...');
       
-      // Initialize database
+      // Initialize database FIRST
       logger.info('Connecting to database...');
       await dbConfig.connect();
       await dbConfig.sync(false); // Don't force sync in production
@@ -24,6 +24,10 @@ class Server {
       logger.info('Initializing face recognition model...');
       await faceService.initialize();
       logger.info('Face recognition model initialized');
+
+      // Create App AFTER database is connected
+      logger.info('Initializing Express application...');
+      this.app = new App();
 
       // Start HTTP server
       const port = config.port;

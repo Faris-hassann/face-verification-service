@@ -1,4 +1,4 @@
-const { InferenceSession } = require('onnxruntime-node');
+const { InferenceSession, Tensor } = require('onnxruntime-node');
 const fs = require('fs');
 const path = require('path');
 const logger = require('../utils/logger');
@@ -52,14 +52,18 @@ class ModelConfig {
         throw new Error('Model not loaded. Call loadModel() first.');
       }
 
-      // Prepare input tensor
-      const inputTensor = new Float32Array(inputData);
+      // Prepare input tensor with correct shape
       const inputShape = [1, 3, config.model.inputSize, config.model.inputSize];
+      const expectedSize = inputShape.reduce((a, b) => a * b, 1);
       
-      // Create input feeds
+      if (inputData.length !== expectedSize) {
+        throw new Error(`Input data size mismatch. Expected ${expectedSize}, got ${inputData.length}`);
+      }
+      
+      // Create input feeds with proper tensor
       const feeds = {};
       const inputName = this.session.inputNames[0];
-      feeds[inputName] = new Float32Array(inputTensor);
+      feeds[inputName] = new Tensor('float32', inputData, inputShape);
 
       // Run inference
       const results = await this.session.run(feeds);
