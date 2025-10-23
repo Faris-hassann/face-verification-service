@@ -17,7 +17,7 @@ class Server {
       // Initialize database FIRST
       logger.info('Connecting to database...');
       await dbConfig.connect();
-      await dbConfig.sync(false); // Don't force sync in production
+      await dbConfig.sync(true); // Don't force sync in production
       logger.info('Database connected and synchronized');
 
       // Initialize face service
